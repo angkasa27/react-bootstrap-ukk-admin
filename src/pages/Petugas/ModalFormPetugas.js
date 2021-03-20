@@ -1,26 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../../component/fragment/Modal';
 import InputText from '../../component/fragment/Input/InputText';
+import { useLocation } from 'react-router-dom';
+import queryString from 'querystring';
+import moment from 'moment';
 
 export default function ModalEdit({ data, handleSubmit }) {
+  const location = useLocation();
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
+  const { add } = queryString.parse(location.search.replace('?', ''));
 
   useEffect(() => {
-    if (data) {
-      setName(data.name);
-      setUsername(data.username);
-      setPhone(data.phone);
+    if (data && !add) {
+      setName(data.nama_petugas);
+      setUsername(data.Username);
+      setPhone(data.telp);
     }
   }, [data]);
 
+  const date = () => {
+    return moment().format();
+  };
+
   const onSubmit = () => {
-    handleSubmit({
-      name,
-      username,
-      phone,
-    });
+    if (add)
+      handleSubmit({
+        name,
+        username,
+        phone,
+        createAt: date(),
+        password,
+      });
+    else handleSubmit({ name, username, phone });
+    setName('');
+    setUsername('');
+    setPhone('');
+    setPassword('');
   };
 
   return (
@@ -54,6 +72,15 @@ export default function ModalEdit({ data, handleSubmit }) {
           onChange={(e) => setPhone(e.target.value)}
           className="col-md-12"
         />
+        {add && (
+          <InputText
+            name="password"
+            label="Password"
+            className="col-md-12"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        )}
       </form>
     </Modal>
   );

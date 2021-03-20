@@ -54,6 +54,7 @@ export const getAllPengaduan = async (page) =>
     headers: BEARER_AUTH(),
   });
 
+
 export const getDetailPengaduan = async (id) =>
   await fetch(`${BASE_URL}/pengaduan/${id}`, 'get', {
     headers: BEARER_AUTH(),

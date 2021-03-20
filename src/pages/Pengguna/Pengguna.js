@@ -19,7 +19,7 @@ export default function Pengguna() {
   const { page = 1, id } = queryString.parse(location.search.replace('?', ''));
 
   const renderDate = (date) => {
-    return Moment(date).locale('id').format('LL');
+    return Moment(date).locale('id').format('D MMMM YYYY');
   };
 
   //Me render tombnol action
@@ -102,7 +102,7 @@ export default function Pengguna() {
     },
     {
       heading: 'tgl bergabung',
-      value: (v) => renderDate(v.createAt),
+      value: (v) => renderDate(v.createAt_masyarakat),
     },
     {
       heading: '',

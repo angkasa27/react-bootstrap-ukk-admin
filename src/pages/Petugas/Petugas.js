@@ -24,7 +24,7 @@ export default function Petugas() {
   if (getRole() !== 'admin') history.push('/');
 
   const renderDate = (date) => {
-    return Moment(date).locale('id').format('LL');
+    return Moment(date).locale('id').format('D MMMM YYYY');
   };
 
   const renderAction = (adminId) => {
@@ -97,8 +97,12 @@ export default function Petugas() {
       value: (v) => v.Username,
     },
     {
+      heading: 'Nomor Telepon',
+      value: (v) => v.telp,
+    },
+    {
       heading: 'tgl bergabung',
-      value: (v) => renderDate(v.telp),
+      value: (v) => renderDate(v.createAt_petugas),
     },
     {
       heading: '',
@@ -119,14 +123,28 @@ export default function Petugas() {
 
   const handleDelete = () => {
     deleteOne(detail.id_petugas, setLoading);
-    closeModal();
+    closeAllModal();
   };
 
   const handleSubmit = (v) => {
     if (add) addNew(v, setLoading);
     else if (detail.id_petugas)
       updateOperator(detail.id_petugas, v, setLoading);
-    closeModal();
+    closeAllModal();
+  };
+
+  //function yang digunakan untuk menutup SEMUA modal
+  const closeAllModal = () => {
+    // Karena modalnya pake framework punya Bosstrap yang pake jquery, jadi cuman gini
+    closeModal('editAdmin');
+    closeModal('hapusAdmin');
+
+    // Untuk membersihkan query selain page
+    history.push({
+      search: queryString.stringify({
+        page,
+      }),
+    });
   };
 
   return (
@@ -140,7 +158,20 @@ export default function Petugas() {
           <div className="col-12 card shadow p-4 rounded-3 border-0">
             <div className="d-flex align-items-center mb-2 justify-content-between">
               <h4 className="h4">Total :</h4>
-              <button className="btn btn-primary">Tambah Petugas</button>
+              <button
+                onClick={() => {
+                  history.push({
+                    search: queryString.stringify({
+                      page,
+                      add: true,
+                    }),
+                  });
+                  openModal('editAdmin');
+                }}
+                className="btn btn-primary"
+              >
+                Tambah Petugas
+              </button>
             </div>
             <Table column={column} data={data.data} />
             <div className="row d-flex flex-row-reverse mt-4">
@@ -157,7 +188,7 @@ export default function Petugas() {
       >
         Apakah anda yakin ingin menghapus akun ini?
       </Modal>
-      <ModalFormPetugas handleSubmit={(v) => handleSubmit(v)} />
+      <ModalFormPetugas handleSubmit={(v) => handleSubmit(v)} data={detail} />
     </div>
   );
 }
